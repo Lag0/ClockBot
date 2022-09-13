@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from turtle import color
 from main import *
-import nextcord, os, config
+import nextcord, os
 from nextcord import slash_command, SlashOption, Interaction, Embed, ui
 from nextcord.ext import commands
 from nextcord.ui import Button, View
