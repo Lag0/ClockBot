@@ -72,15 +72,9 @@ class RegisterPonto(ui.View):
         split = nome.split("| ")
         passaporte = split[1]
 
-        db.BatePonto.updateOne({
-            "passaporte": passaporte, {
-                "$set": {
-                    "horarioSaida": timeStringEnd
-                }
-            }
-        })
-        
         logStart = db.BatePonto.find({"$query": {"passaporte": passaporte}, "$orderby": {"$natural": -1}}).limit(1)
+        updateID = logStart[0]["_id"]
+        db.BatePonto.update_one({"_id": updateID}, {"$set": {"horarioSaida": timeStringEnd}})
         
         embed2 = Embed(title='**PONTO FINALIZADO ✅**' ,colour=0x5865F2)
         embed2.add_field(name='**NOME DO OFICIAL:**', value=f"👮🏻・{interaction.user.mention}", inline=False)

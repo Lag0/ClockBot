@@ -7,7 +7,7 @@ TOKEN_ID = os.getenv("TOKEN_ID")
 CONNECTION_STRING = os.getenv("CONNECTION_STRING")
 
 client = pymongo.MongoClient(CONNECTION_STRING)
-db = client.HavanaRP
+db = client.bpm
 batePonto = db.BatePonto
 
 class Bot(commands.Bot): 
