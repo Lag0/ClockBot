@@ -47,6 +47,7 @@ class RegisterPonto(ui.View):
             "nome": interaction.user.display_name,
             "passaporte": passaporte,
             "horarioEntrada": timeStringStart,
+            "horarioSaida": ""
             }
 
         db.BatePonto.insert_one(modeloPontoEntrada)
@@ -70,6 +71,14 @@ class RegisterPonto(ui.View):
         nome = interaction.user.display_name
         split = nome.split("| ")
         passaporte = split[1]
+
+        db.BatePonto.updateOne({
+            "passaporte": passaporte, {
+                "$set": {
+                    "horarioSaida": timeStringEnd
+                }
+            }
+        })
         
         logStart = db.BatePonto.find({"$query": {"passaporte": passaporte}, "$orderby": {"$natural": -1}}).limit(1)
         
