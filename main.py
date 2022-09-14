@@ -7,8 +7,7 @@ TOKEN_ID = os.getenv("TOKEN_ID")
 CONNECTION_STRING = os.getenv("CONNECTION_STRING")
 
 client = pymongo.MongoClient(CONNECTION_STRING)
-db = client.HavanaRP
-batePonto = db.BatePonto
+db = client.bpm
 
 class Bot(commands.Bot): 
      def __init__(self, *args, **kwargs): 
@@ -17,7 +16,7 @@ class Bot(commands.Bot):
 
 intents = nextcord.Intents.default()
 intents.members = True
-bot = Bot(command_prefix='$', intents=intents)
+bot = Bot(intents=intents)
 
 @bot.event
 async def on_ready():
