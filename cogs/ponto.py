@@ -14,7 +14,7 @@ class ConsultaPonto(commands.Cog):
         self.colour = 0x4555ff
 
     @slash_command(name='ponto', description='Todas as informações de ponto do passaporte indicado.',
-                   guild_ids=[GUILD_ID])
+                   guild_ids=[GUILD_ID], default_member_permissions=0)
     async def ponto(
             self,
             ctx: Interaction,

@@ -25,6 +25,7 @@ class RegisterPonto(ui.View):
         style=nextcord.ButtonStyle.blurple,
         label="⏰ Bater-Ponto",
         custom_id="BaterPonto:callback",
+        
     )
     async def callback(self, button: nextcord.ui.button, interaction: Interaction):
         self.value = True
@@ -58,7 +59,7 @@ class RegisterPonto(ui.View):
 
     # Botão de saída
     @nextcord.ui.button(
-        style=nextcord.ButtonStyle.blurple,
+        style=nextcord.ButtonStyle.red,
         label="📤 Sair do Ponto",
         custom_id="BaterPonto:callback2",
     )
@@ -73,9 +74,9 @@ class RegisterPonto(ui.View):
 
         log_start = db.BatePonto.find({"$query": {"passaporte": passaporte}, "$orderby": {"$natural": -1}}).limit(1)
         log_end = db.BatePonto.find({"$query": {"passaporte": passaporte}, "$orderby": {"$natural": -1}}).limit(1)
-        
+
         tempo_servico = datetime.strptime(time_end, "%H:%M:%S") - datetime.strptime(log_start[0]['horarioEntrada'], "%H:%M:%S")
-        
+
         update_id = log_start[0]["_id"]
         db.BatePonto.update_one({"_id": update_id}, {"$set": {"horarioSaida": time_end, "TempoServico": str(tempo_servico)}})
 
@@ -104,7 +105,7 @@ class BaterPonto(commands.Cog):
     async def cadastrar(self, interaction: Interaction):
         embed = Embed(title="Central de Bate-Pontos ⏰",
                       description="Selecione o botão abaixo para registrar seu ponto.", colour=self.colour)
-        embed.set_image(url='https://i.ytimg.com/vi/UMcl1nnF9LQ/maxresdefault.jpg')
+        embed.set_image(url='https://i.imgur.com/Toz93yr.png')
         embed.set_footer(text='Desenvolvido por @Lag0#0001 © 2022 - Todos os direitos reservados.')
         await interaction.channel.send(embed=embed, view=RegisterPonto())
 
