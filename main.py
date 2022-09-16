@@ -26,9 +26,9 @@ async def on_ready():
     print("----------------------------")
     print(f"{bot.user} is online...")
     print("----------------------------")
-    
+
 for fn in os.listdir('./cogs'):
     if fn.endswith('.py'):
         bot.load_extension(f"cogs.{fn[:-3]}")
-        
+
 bot.run(TOKEN_ID)
