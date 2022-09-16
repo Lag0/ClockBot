@@ -30,7 +30,7 @@ class RegisterPonto(ui.View):
     async def callback(self, button: nextcord.ui.button, interaction: Interaction):
         self.value = True
         time_start = datetime.now().strftime("%H:%M:%S")
-        date_today = datetime.now().strftime("%d/%m/%Y")
+        date_start = datetime.now().strftime("%d/%m/%Y")
 
         nome = interaction.user.display_name
         split = nome.split("| ")
@@ -39,14 +39,14 @@ class RegisterPonto(ui.View):
         embed = Embed(title='**PONTO REGISTRADO ✅**', colour=0x5865F2)
         embed.add_field(name='**NOME DO OFICIAL:**', value=f"👮🏻・{interaction.user.mention}", inline=False)
         embed.add_field(name='**PASSAPORTE:**', value=f"📄・{passaporte}", inline=False)
-        embed.add_field(name='**DATA:**', value=f"📅・{date_today}", inline=False)
+        embed.add_field(name='**DATA:**', value=f"📅・{date_start}", inline=False)
         embed.add_field(name='**HORÁRIO DE ENTRADA:**', value=f"⏰・{time_start}", inline=False)
         embed.add_field(name='**HORÁRIO DE SAIDA:**', value="📤・em serviço...", inline=False)
 
         modeloPontoEntrada = {
             "nome": interaction.user.display_name,
             "passaporte": passaporte,
-            "data": date_today,
+            "data": date_start,
             "horarioEntrada": time_start,
         }
 
@@ -65,17 +65,22 @@ class RegisterPonto(ui.View):
     )
     async def callback2(self, button: nextcord.ui.button, interaction: Interaction):
         self.value = True
-        time_end = datetime.now().strftime("%H:%M:%S")
-        date_today = datetime.now().strftime("%d/%m/%Y")
-
         nome = interaction.user.display_name
         split = nome.split("| ")
         passaporte = split[1]
 
         log_start = db.BatePonto.find({"$query": {"passaporte": passaporte}, "$orderby": {"$natural": -1}}).limit(1)
-        log_end = db.BatePonto.find({"$query": {"passaporte": passaporte}, "$orderby": {"$natural": -1}}).limit(1)
 
-        tempo_servico = datetime.strptime(time_end, "%H:%M:%S") - datetime.strptime(log_start[0]['horarioEntrada'], "%H:%M:%S")
+        time_end = datetime.now().strftime("%H:%M:%S")
+        date_end = datetime.now().strftime("%d/%m/%Y")
+
+        all_date_start = log_start[0]['data'] + " " + log_start[0]['horarioEntrada']
+        all_date_end = date_end + " " + time_end
+
+        print("all_data: ", all_date_end)
+        print("all_data_start: ", all_date_start)
+
+        tempo_servico = datetime.strptime(all_date_end, "%d/%m/%Y %H:%M:%S") - datetime.strptime(all_date_start, "%d/%m/%Y %H:%M:%S")
 
         update_id = log_start[0]["_id"]
         db.BatePonto.update_one({"_id": update_id}, {"$set": {"horarioSaida": time_end, "TempoServico": str(tempo_servico)}})
@@ -83,9 +88,9 @@ class RegisterPonto(ui.View):
         embed2 = Embed(title='**PONTO FINALIZADO ✅**', colour=0x5865F2)
         embed2.add_field(name='**NOME DO OFICIAL:**', value=f"👮🏻・{interaction.user.mention}", inline=False)
         embed2.add_field(name='**PASSAPORTE:**', value=f"📄・{passaporte}", inline=False)
-        embed2.add_field(name='**DATA:**', value=f"📅・{date_today}", inline=False)
+        embed2.add_field(name='**DATA:**', value=f"📅・{log_start[0]['data']}", inline=False)
         embed2.add_field(name='**HORÁRIO DE ENTRADA:**', value=f"⏰・{log_start[0]['horarioEntrada']}", inline=False)
-        embed2.add_field(name='**HORÁRIO DE SAIDA:**', value=f"📤・{log_end[0]['horarioSaida']}", inline=False)
+        embed2.add_field(name='**HORÁRIO DE SAIDA:**', value=f"📤・{log_start[0]['horarioSaida']}", inline=False)
         embed2.add_field(name='**TEMPO EM SERVIÇO:**', value=f"🏢・{str(tempo_servico)}", inline=False)
         await interaction.response.send_message(embed=embed2, ephemeral=True)
         await log.edit(embed=embed2)
@@ -105,7 +110,7 @@ class BaterPonto(commands.Cog):
     async def cadastrar(self, interaction: Interaction):
         embed = Embed(title="Central de Bate-Pontos ⏰",
                       description="Selecione o botão abaixo para registrar seu ponto.", colour=self.colour)
-        embed.set_image(url='https://i.imgur.com/Toz93yr.png')
+        embed.set_image(url='https://i.imgur.com/MSwVNZO.png')
         embed.set_footer(text='Desenvolvido por @Lag0#0001 © 2022 - Todos os direitos reservados.')
         await interaction.channel.send(embed=embed, view=RegisterPonto())
 
