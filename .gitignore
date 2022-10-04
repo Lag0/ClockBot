@@ -2,5 +2,6 @@
 config.py
 *.env
 *.idea
+*.config
 discloud.config
 __pycache__*
