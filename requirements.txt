@@ -1,3 +1,4 @@
 pymongo
 nextcord
-dotenv
+python-dotenv
+dnspython
